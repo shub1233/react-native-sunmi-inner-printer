@@ -5,92 +5,92 @@ import android.os.Parcelable;
 
 public class TransBean implements Parcelable {
 
-    private byte type = 0;
-    private String text = "";
-    private byte[] data = null;
-    private int datalength = 0;
+	private byte type = 0;
+	private String text = "";
+	private byte[] data = null;
+	private int datalength = 0;
+	
+	public TransBean(){
+		type = 0;
+		data = null;
+		text = "";
+		datalength = 0;		
+	};
+	
+	public byte getType() {
+		return type;
+	}
 
-    public TransBean(){
-        type = 0;
-        data = null;
-        text = "";
-        datalength = 0;
-    };
+	public void setType(byte type) {
+		this.type = type;
+	}
 
-    public byte getType() {
-        return type;
-    }
+	public String getText() {
+		return text;
+	}
 
-    public void setType(byte type) {
-        this.type = type;
-    }
+	public void setText(String text) {
+		this.text = text;
+	}
 
-    public String getText() {
-        return text;
-    }
+	public byte[] getData() {
+		return data;
+	}
 
-    public void setText(String text) {
-        this.text = text;
-    }
+	public void setData(byte[] data) {
+		if(data != null){
+			datalength = data.length;
+			this.data = new byte[datalength];
+			System.arraycopy(data, 0, this.data, 0, datalength);
+		}
+	}
 
-    public byte[] getData() {
-        return data;
-    }
+	public TransBean(Parcel source){
+		this.type = source.readByte();
+		this.datalength = source.readInt();
+		this.text = source.readString();
+		if(datalength > 0){
+			this.data = new byte[datalength];
+			source.readByteArray(data);
+		}
+	}
+	
+	public TransBean(byte type, String text, byte[] data){
+		this.type = type;
+		this.text = text;
+		if(data != null){
+			this.datalength = data.length;
+			this.data = new byte[datalength];
+			System.arraycopy(data, 0, this.data, 0, datalength);
+		}
+	}
+	
+	@Override
+	public int describeContents() {
+		return 0;
+	}
 
-    public void setData(byte[] data) {
-        if(data != null){
-            datalength = data.length;
-            this.data = new byte[datalength];
-            System.arraycopy(data, 0, this.data, 0, datalength);
-        }
-    }
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeByte(type);
+		dest.writeInt(datalength);
+		dest.writeString(text);
+		if(data != null){
+			dest.writeByteArray(data);
+		}
+	}
+	
+	public static Parcelable.Creator<TransBean> CREATOR = new Parcelable.Creator<TransBean>(){
 
-    public TransBean(Parcel source){
-        this.type = source.readByte();
-        this.datalength = source.readInt();
-        this.text = source.readString();
-        if(datalength > 0){
-            this.data = new byte[datalength];
-            source.readByteArray(data);
-        }
-    }
+		@Override
+		public TransBean createFromParcel(Parcel source) {
+			return new TransBean(source);
+		}
 
-    public TransBean(byte type, String text, byte[] data){
-        this.type = type;
-        this.text = text;
-        if(data != null){
-            this.datalength = data.length;
-            this.data = new byte[datalength];
-            System.arraycopy(data, 0, this.data, 0, datalength);
-        }
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(type);
-        dest.writeInt(datalength);
-        dest.writeString(text);
-        if(data != null){
-            dest.writeByteArray(data);
-        }
-    }
-
-    public static Creator<TransBean> CREATOR = new Creator<TransBean>(){
-
-        @Override
-        public TransBean createFromParcel(Parcel source) {
-            return new TransBean(source);
-        }
-
-        @Override
-        public TransBean[] newArray(int size) {
-            return new TransBean[size];
-        }
-    };
+		@Override
+		public TransBean[] newArray(int size) {
+			return new TransBean[size];
+		}		
+	};
 
 }

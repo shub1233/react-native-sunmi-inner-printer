@@ -1,4 +1,4 @@
-package com.test.printertestdemo;
+package com.sunmi.innerprinter;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

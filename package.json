@@ -1,15 +1,14 @@
 {
   "name": "react-native-sunmi-inner-printer",
-  "version": "0.1.6",
-  "description": "http://docs.sunmi.com/htmls/index.html?lang=zh##V1文档资源 根据商米V1文档开发的蓝牙打印for React Native.",
-  "author": "Janus J K Lu <januslo6211@gmail.com>",
+  "version": "0.2.0",
+  "description": "http://docs.sunmi.com/htmls/index.html?lang=zh 根据商米文档开发的蓝牙打印for React Native.",
   "contributors": [],
   "repository": {
     "type": "git",
-    "url": "https://github.com/januslo/react-native-sunmi-inner-printer"
+    "url": "https://github.com/cooclsee/react-native-sunmi-inner-printer"
   },
   "bugs": {
-    "url": "https://github.com/januslo/react-native-sunmi-inner-printer/issues"
+    "url": "https://github.com/cooclsee/react-native-sunmi-inner-printer/issues"
   },
   "main": "index.js",
   "scripts": {
@@ -22,6 +21,10 @@
     "商米",
     "打印"
   ],
+  "author": {
+    "name": "cooclsee",
+    "email": "cooclsee@gmail.com"
+  },
   "license": "MIT",
   "private": false,
   "peerDependencies": {

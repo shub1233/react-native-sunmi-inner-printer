@@ -13,3 +13,9 @@ examples/android/build
 examples/android/app/build
 examples/android/.gradle
 android/build
+
+.gradle/
+.settings/
+.project
+
+examples/android/app/.classpath
