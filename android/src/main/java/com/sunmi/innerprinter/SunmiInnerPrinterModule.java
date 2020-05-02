@@ -294,7 +294,7 @@ public class SunmiInnerPrinterModule extends ReactContextBaseJavaModule {
     }
 
     private String getPrinterVersion() throws Exception {
-        return sunmiPrinterService.getPrinterVersion();
+        return sunmiPrinterService.getPrinterVersion().replace("\n", "");
     }
 
     /**
@@ -311,7 +311,7 @@ public class SunmiInnerPrinterModule extends ReactContextBaseJavaModule {
     }
 
     private String getPrinterModal() throws Exception {
-        return sunmiPrinterService.getPrinterModal();
+        return sunmiPrinterService.getPrinterModal().replace("\n", "");
     }
 
     /**
