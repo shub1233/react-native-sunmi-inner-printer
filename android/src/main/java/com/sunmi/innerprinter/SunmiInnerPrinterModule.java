@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.os.RemoteException;
 import android.util.Base64;
 import android.util.Log;
 
@@ -18,6 +19,7 @@ import com.sunmi.peripheral.printer.InnerPrinterException;
 import com.sunmi.peripheral.printer.InnerPrinterManager;
 import com.sunmi.peripheral.printer.InnerResultCallbcak;
 import com.sunmi.peripheral.printer.SunmiPrinterService;
+import com.sunmi.peripheral.printer.WoyouConsts;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,6 +66,13 @@ public class SunmiInnerPrinterModule extends ReactContextBaseJavaModule {
         Log.d("PrinterReceiver", "------------ init ");
     }
 
+    private static byte[] rnArrayToBytes(ReadableArray rArray) {
+        byte[] bytes = new byte[rArray.size()];
+        for (int i = 0; i < rArray.size(); i++) {
+            bytes[i] = (byte)(rArray.getInt(i) & 0xff);
+        }
+        return bytes;
+    }
 
     private InnerPrinterCallback innerPrinterCallback = new InnerPrinterCallback() {
         @Override
@@ -491,11 +500,11 @@ public class SunmiInnerPrinterModule extends ReactContextBaseJavaModule {
     /**
      * 使用原始指令打印
      *
-     * @param base64EncriptedData     指令
+     * @param dataArray     指令
      */
     @ReactMethod
-    public void sendRAWData(String base64EncriptedData, final Promise p) {
-        final byte[] d = Base64.decode(base64EncriptedData, Base64.DEFAULT);
+    public void sendRAWData(ReadableArray dataArray, final Promise p) {
+        final byte[] d = rnArrayToBytes(dataArray);
         ThreadPoolManager.getInstance().executeTask(new Runnable() {
             @Override
             public void run() {
@@ -1073,7 +1082,7 @@ public class SunmiInnerPrinterModule extends ReactContextBaseJavaModule {
 
 
     @ReactMethod
-    public void printString(String message, final Promise p) {
+    public void printText(String message, final Promise p) {
         Log.i(TAG, "come: " + message + " ss:" + sunmiPrinterService);
         final String msgs = message;
         ThreadPoolManager.getInstance().executeTask(new Runnable() {
@@ -1152,14 +1161,13 @@ public class SunmiInnerPrinterModule extends ReactContextBaseJavaModule {
 
                         @Override
                         public void onReturnString(String result) {
-                            // callback.invoke(isSuccess);
+                            p.resolve(result);
                         }
 
                         @Override
                         public void onRaiseException(int code, String msg) {
-                            e.printStackTrace();
-                            Log.i(TAG, "ERROR: " + e.getMessage());
-                            p.reject("0", e.getMessage());
+                            Log.i(TAG, "ERROR: " + code + ", " + msg);
+                            p.reject("" +code, msg);
                         }
                     });
                 } catch (Exception e) {
@@ -1172,7 +1180,47 @@ public class SunmiInnerPrinterModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setPrinterStyle(int key, int value, final Promise p) {
+    public void autoOutPaper(final Promise p) {
+        ThreadPoolManager.getInstance().executeTask(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    sunmiPrinterService.autoOutPaper(new InnerResultCallbcak() {
+                        @Override
+                        public void onPrintResult(int code, String msg) {
+                            Log.d(TAG, "ON PRINT RES: " + code + ", " + msg);
+                        }
+
+                        @Override
+                        public void onRunResult(boolean isSuccess) {
+                            if (isSuccess) {
+                                p.resolve(null);
+                            } else {
+                                p.reject("0", isSuccess + "");
+                            }
+                        }
+
+                        @Override
+                        public void onReturnString(String result) {
+                            p.resolve(result);
+                        }
+
+                        @Override
+                        public void onRaiseException(int code, String msg) {
+                            Log.i(TAG, "ERROR: " + code + ", " + msg);
+                            p.reject("" +code, msg);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.i(TAG, "ERROR: " + e.getMessage());
+                    p.reject("0", e.getMessage());
+                }
+            }
+        });
+    }
+    @ReactMethod
+    public void setPrinterStyle(final int key, final int value, final Promise p) {
         ThreadPoolManager.getInstance().executeTask(new Runnable() {
             @Override
             public void run() {
