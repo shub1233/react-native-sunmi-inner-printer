@@ -983,6 +983,13 @@ public class SunmiInnerPrinterModule extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
+
+                    try {
+                        sunmiPrinterService.setPrinterStyle(WoyouConsts.ENABLE_BOLD, WoyouConsts.ENABLE);
+                    } catch (RemoteException e) {
+                        sunmiPrinterService.sendRAWData(ESCUtil.boldOn(), null);
+                    }
+
                     sunmiPrinterService.printOriginalText(txt, new InnerResultCallbcak() {
                         @Override
                         public void onPrintResult(int par1, String par2) {
